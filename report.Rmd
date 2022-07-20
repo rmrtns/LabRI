@@ -1,0 +1,164 @@
+---
+title: "Reference interval for `r params$var`"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: 
+    df_print: paged
+  word_document: default
+params:
+  var: NA
+  n: NA
+  bins: NA
+  range_lower: NA
+  range_upper: NA
+  hist_untransformed: NA
+  qq_untransformed: NA
+  box_print_no: NA
+  box_print_yes: NA
+  box_cox_plot: NA
+  hist_transformed: NA
+  qq_transformed: Na
+  transformation: NA
+  bhat_print: NA
+  bhat_dlogcount: NA
+  bhat_sections: NA
+  bhat_density: NA
+  bhat_cdf: NA
+  bhat_ri: NA
+  mixt_print: NA
+  mixt_mode: NA
+  mixt_density: NA
+  mixt_cdf: NA
+  mixt_ri: NA
+---
+
+```{r, include = FALSE}
+library(knitr)
+```
+
+```{r, results = 'asis', echo = FALSE}
+cat("##", "Box-Cox analysis for ", params$var, "\n")
+```
+
+```{r, echo = FALSE}
+data_parameters_labels <- c("Number of measurements", "Number of bins", "Lowest value", "Highest value")
+data_parameters_values <- c(params$n, params$bins, params$range_lower, params$range_upper)
+data_parameters_combined <- data.frame("Parameter" = data_parameters_labels,
+                                       "Value" = data_parameters_values)
+kable(data_parameters_combined, caption = "Histogram parameters")
+```
+
+```{r, echo = FALSE, out.width = "50%"}
+params$hist_untransformed
+params$qq_untransformed
+```
+
+```{r, conditional_block10a, eval = params$box_print_no, results = 'asis', echo = FALSE}
+cat("Box-Cox analysis not performed because of negative values")
+```
+
+```{r, conditional_block10b, eval = params$box_print_yes, echo = FALSE, out.width = "50%"}
+params$box_cox_plot
+```
+
+```{r, conditional_block10c, eval = params$box_print_yes, results = 'asis', echo = FALSE}
+cat("\\pagebreak")
+```
+
+```{r, echo = FALSE, out.width = "50%"}
+params$hist_transformed
+params$qq_transformed
+```
+
+```{r, results = 'asis', echo = FALSE}
+cat("Transformation used for subsequent analyses: ", str_to_lower(params$transformation), "\n")
+```
+\pagebreak
+
+```{r, conditional_print11, eval = params$bhat_print, results = 'asis', echo = FALSE}
+cat("##", "Bhattacharya analysis for ", params$var, "\n")
+```
+
+```{r, conditional_block11, eval = params$bhat_print, echo = FALSE, warning = FALSE, out.width = "85%"}
+params$bhat_dlogcount
+```
+
+```{r, conditional_block2, eval = params$bhat_print, echo = FALSE, warning = FALSE}
+kable(params$bhat_sections, caption = "Bins included as lower and upper ends of regression lines for Bhattacharya analysis")
+```
+
+```{r, conditional_print12, eval = params$bhat_print, results = 'asis', echo = FALSE}
+cat("\\pagebreak")
+```
+
+```{r, conditional_block13, eval = params$bhat_print, echo = FALSE, warning = FALSE, out.width = "95%"}
+params$bhat_density
+```
+
+```{r, conditional_block14, eval = params$bhat_print, echo = FALSE, warning = FALSE, out.width = "95%"}
+params$bhat_cdf
+```
+
+```{r, conditional_print13, eval = params$bhat_print, results = 'asis', echo = FALSE}
+cat("\\pagebreak")
+```
+
+```{r, conditional_block15, eval = params$bhat_print, echo = FALSE}
+kable(params$bhat_ri, caption = "Reference interval by Bhattacharya analysis")
+```
+
+```{r, conditional_print14, eval = params$bhat_print, results = 'asis', echo = FALSE}
+cat("\\pagebreak")
+```
+
+```{r, conditional_print21, eval = params$mixt_print, results = 'asis', echo = FALSE}
+cat("##", "Mixtools analysis for ", params$var, "in", params$mixt_mode, " distribution mode", "\n")
+```
+
+```{r, conditional_block21, eval = params$mixt_print, echo = FALSE, warning = FALSE, out.width = "95%"}
+params$mixt_density
+```
+
+```{r, conditional_block22, eval = params$mixt_print, echo = FALSE, warning = FALSE, out.width = "95%"}
+params$mixt_cdf
+```
+
+```{r, conditional_print22, eval = params$mixt_print, results = 'asis', echo = FALSE}
+cat("\\pagebreak")
+```
+
+```{r, conditional_block23, eval = params$mixt_print, echo = FALSE}
+kable(params$mixt_ri, caption = "Reference interval by mixtools analysis")
+```
+
+```{r, conditional_print23, eval = params$mixt_print, results = 'asis', echo = FALSE}
+cat("\\pagebreak")
+```
+
+## Information.
+Data are processed and presented on an interactive website using R language^1^, the shiny web application framework^2^ and the following packages: dplyr^3^, DT^4^, ggplot2^5^, mixtools^6^, readxl^7^, shinyFeedback^8^ and stringr^9^. Box-Cox analysis is performed with an adapted form of the gg_boxcox application of the lindia^10^ package and the boxcox function of the MASS^11^ package. In addition, the Bhattacharya analysis is based on code developed by The Lab-R-Torian^12^. Results are converted into pdf and html output with R Markdown^13^.
+
+## References and packages:
+1. R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. Version: `r getRversion()`. URL: https://www.R-project.org
+2. shiny: Web Application Framework for R. Version `r packageDescription("shiny")$Version`. URL: https://CRAN.R-project.org/package=shiny
+3. dplyr: A Grammar of Data Manipulation. Version: `r packageDescription("dplyr")$Version`. URL: https://cran.r-project.org/web/packages/dplyr
+4. DT: A Wrapper of the JavaScript Library 'DataTables'. Version: `r packageDescription("DT")$Version`. URL: https://cran.r-project.org/web/packages/DT
+5. ggplot2: Create Elegant Data Visualisations Using the Grammar of Graphics. Version: `r packageDescription("ggplot2")$Version`. URL: https://cran.r-project.org/web/packages/ggplot2
+6. mixtools: Tools for Analyzing Finite Mixture Models. Version: `r packageDescription("mixtools")$Version`. URL: https://cran.r-project.org/package=mixtools
+7. readxl: Read Excel Files. Version: `r packageDescription("readxl")$Version`. URL: https://cran.r-project.org/package=readxl
+8. shinyFeedback: Display User Feedback in Shiny Apps. Version: `r packageDescription("shinyFeedback")$Version`. URL: https://cran.rstudio.com/web/packages/shinyFeedback
+9. stringr: Simple, Consistent Wrappers for Common String Operations. Version: `r packageDescription("stringr")$Version`. URL: https://cran.r-project.org/package=stringr
+10. lindia: Automated Linear Regression Diagnostic. Version: `r packageDescription("lindia")$Version`. URL: https://cran.r-project.org/package=lindia
+11. MASS: Support Functions and Datasets for Venables and Ripley's MASS. Version: `r packageDescription("MASS")$Version`. URL: https://cran.r-project.org/package=MASS
+12. The Lab-R-Torian: Applications of the R programming Language to Laboratory Medicine. URL: https://labrtorian.com/2017/09/05/mining-your-routine-data-for-reference-intervals-hoffman-bhattacharya-and-maximum-likelihood/
+13. rmarkdown: Dynamic Documents for R. Version: `r packageDescription("rmarkdown")$Version`. URL: http://rmarkdown.rstudio.com
+
+## Disclaimer.
+This application was developed as a research tool for the exploration of reference intervals in populations consisting of a mixture of distributions. The use of this application shall constitute acceptance of the terms of the following disclaimers:
+- This application is intended for research purposes only.
+- All results computed by and published within this application are designed to  assist, but not to replace professional judgment. Therefore, the user shall review the results of this application carefully and may not rely solely on the information.
+- The information herein is provided 'AS IS' and 'AS AVAILABLE' and no representation, warranty or guarantee, explicit or implied, is made regarding the application's result accuracy, timeliness, sequence, completeness or suitability to a specific purpose or that the result will be error free or that any defects or omissions can or will be corrected.
+- The creator of this application will not be liable for any direct, indirect, incidental, consequential, special, exemplary, punitive or any damages whatsoever resulting in whole or part from any user's use of or reliance upon the application whether or not advised of the possibility of damage under any theory of liability, arising out of or in connection with the use or performance of the application.
+
+LabRI, beta version 1.0, 2022.
