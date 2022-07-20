@@ -13,7 +13,7 @@ LabRI includes other open source software components, either as modified functio
 -	lindia: Automated Linear Regression Diagnostic. https://cran.r-project.org/package=lindia. Licensed under MIT.
 -	MASS: Support Functions and Datasets for Venables and Ripley's MASS. https://cran.r-project.org/package=MASS. Licensed under GPL-3.
 -	The Lab-R-Torian: Applications of the R programming Language to Laboratory Medicine. https://labrtorian.com/2017/09/05/mining-your-routine-data-for-reference-intervals-hoffman-bhattacharya-and-maximum-likelihood/. License unknown.
--	rmarkdown: Dynamic Documents for R. URL: http://rmarkdown.rstudio.com. Licensed under GPL-3.
+-	rmarkdown: Dynamic Documents for R. http://rmarkdown.rstudio.com. Licensed under GPL-3.
 
 R license
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
