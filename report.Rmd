@@ -1,12 +1,15 @@
 ---
+header-includes:
+- \usepackage{titling}
+- \setlength{\droptitle}{-5em} 
+- \usepackage{booktabs}
+- \usepackage{threeparttablex}
 title: "Reference interval for `r params$var`"
 date: "`r Sys.Date()`"
 output:
   pdf_document: default
-  html_document: 
-    df_print: paged
-  word_document: default
 params:
+  filename: NA
   var: NA
   n: NA
   bins: NA
@@ -26,27 +29,57 @@ params:
   bhat_density: NA
   bhat_cdf: NA
   bhat_ri: NA
+  bhat_ri_width: NA
   mixt_print: NA
   mixt_mode: NA
   mixt_density: NA
   mixt_cdf: NA
   mixt_ri: NA
+  mixt_ri_width: NA
+  refiner_print: NA
+  refiner_model: NA
+  refiner_point: NA
+  refiner_bootstraps: NA
+  refiner_fit: NA
+  refiner_ri: NA
+  refiner_ri_width1: NA
+  refiner_ri_width2: NA
+  refiner_ci_width: NA
 ---
 
 ```{r, include = FALSE}
 library(knitr)
+library(kableExtra)
+library(dplyr)
+library(refineR)
 ```
 
 ```{r, results = 'asis', echo = FALSE}
-cat("##", "Box-Cox analysis for ", params$var, "\n")
+cat("##", "Source file \n")
+```
+
+```{r, results = 'asis', echo = FALSE}
+cat(params$filename, "\n")
+```
+
+```{r, results = 'asis', echo = FALSE}
+cat("##", "Data-processing for ", params$var, "\n")
 ```
 
 ```{r, echo = FALSE}
 data_parameters_labels <- c("Number of measurements", "Number of bins", "Lowest value", "Highest value")
-data_parameters_values <- c(params$n, params$bins, params$range_lower, params$range_upper)
+data_parameters_values <- c(
+  str_c(sprintf(paste0("%.", 0, "f"), round(params$n, 0))), 
+  str_c(sprintf(paste0("%.", 0, "f"), round(params$bins, 0))), 
+  params$range_lower, 
+  params$range_upper)
 data_parameters_combined <- data.frame("Parameter" = data_parameters_labels,
                                        "Value" = data_parameters_values)
-kable(data_parameters_combined, caption = "Histogram parameters")
+```
+
+```{r, echo = FALSE}
+kbl(data_parameters_combined, format = "latex", booktabs = TRUE, caption = "Histogram parameters") %>%
+  kable_styling(latex_options = "hold_position")
 ```
 
 ```{r, echo = FALSE, out.width = "50%"}
@@ -54,111 +87,162 @@ params$hist_untransformed
 params$qq_untransformed
 ```
 
-```{r, conditional_block10a, eval = params$box_print_no, results = 'asis', echo = FALSE}
-cat("Box-Cox analysis not performed because of negative values")
+```{r, conditional_block11, eval = params$box_print_no, results = 'asis', echo = FALSE}
+cat("\\begin{center}
+    Box-Cox analysis not performed because of negative values
+    \\end{center}")
 ```
 
-```{r, conditional_block10b, eval = params$box_print_yes, echo = FALSE, out.width = "50%"}
+```{r, conditional_block12, eval = params$box_print_yes, echo = FALSE, out.width = "50%"}
 params$box_cox_plot
 ```
 
-```{r, conditional_block10c, eval = params$box_print_yes, results = 'asis', echo = FALSE}
-cat("\\pagebreak")
-```
-
-```{r, echo = FALSE, out.width = "50%"}
+```{r, conditional_block14, eval = params$transformation != "Untransformed ", echo = FALSE, out.width = "50%"}
 params$hist_transformed
 params$qq_transformed
 ```
 
 ```{r, results = 'asis', echo = FALSE}
-cat("Transformation used for subsequent analyses: ", str_to_lower(params$transformation), "\n")
+cat("\\begin{center}
+    Transformation used for subsequent analyses: ", str_to_lower(params$transformation), "\n",
+    "\\end{center}")
 ```
 \pagebreak
 
-```{r, conditional_print11, eval = params$bhat_print, results = 'asis', echo = FALSE}
+```{r, conditional_print21, eval = params$bhat_print, results = 'asis', echo = FALSE}
 cat("##", "Bhattacharya analysis for ", params$var, "\n")
 ```
 
-```{r, conditional_block11, eval = params$bhat_print, echo = FALSE, warning = FALSE, out.width = "85%"}
+```{r, conditional_block21, eval = params$bhat_print, echo = FALSE, warning = FALSE, out.width = "85%"}
 params$bhat_dlogcount
 ```
 
-```{r, conditional_block2, eval = params$bhat_print, echo = FALSE, warning = FALSE}
-kable(params$bhat_sections, caption = "Bins included as lower and upper ends of regression lines for Bhattacharya analysis")
+```{r, conditional_block22, eval = params$bhat_print, echo = FALSE, warning = FALSE}
+kbl(params$bhat_sections, format = "latex", booktabs = TRUE, caption = " Bins included as lower and upper ends of regression lines for Bhattacharya analysis") %>%
+  kable_styling(latex_options = "hold_position")
 ```
 
-```{r, conditional_print12, eval = params$bhat_print, results = 'asis', echo = FALSE}
+```{r, conditional_print22, eval = params$bhat_print, results = 'asis', echo = FALSE}
 cat("\\pagebreak")
 ```
 
-```{r, conditional_block13, eval = params$bhat_print, echo = FALSE, warning = FALSE, out.width = "95%"}
+```{r, conditional_block23, eval = params$bhat_print, echo = FALSE, warning = FALSE, out.width = "95%"}
 params$bhat_density
 ```
 
-```{r, conditional_block14, eval = params$bhat_print, echo = FALSE, warning = FALSE, out.width = "95%"}
+```{r, conditional_block24, eval = params$bhat_print, echo = FALSE, warning = FALSE, out.width = "95%"}
 params$bhat_cdf
 ```
 
-```{r, conditional_print13, eval = params$bhat_print, results = 'asis', echo = FALSE}
+```{r, conditional_print23, eval = params$bhat_print, results = 'asis', echo = FALSE}
 cat("\\pagebreak")
 ```
 
-```{r, conditional_block15, eval = params$bhat_print, echo = FALSE}
-kable(params$bhat_ri, caption = "Reference interval by Bhattacharya analysis")
+```{r, conditional_block25, eval = params$bhat_print, echo = FALSE}
+kbl(params$bhat_ri, format = "latex", booktabs = TRUE, caption = "Reference interval by Bhattacharya analysis") %>%
+  kable_styling(latex_options = "hold_position") %>%
+  footnote(general = paste0("results based on ", params$bhat_ri_width, " reference interval"), footnote_as_chunk = TRUE)
 ```
 
-```{r, conditional_print14, eval = params$bhat_print, results = 'asis', echo = FALSE}
+```{r, conditional_print24, eval = params$bhat_print, results = 'asis', echo = FALSE}
 cat("\\pagebreak")
 ```
 
-```{r, conditional_print21, eval = params$mixt_print, results = 'asis', echo = FALSE}
-cat("##", "Mixtools analysis for ", params$var, "in", params$mixt_mode, " distribution mode", "\n")
+```{r, conditional_print31, eval = params$mixt_print, results = 'asis', echo = FALSE}
+cat("##", "Mixtools analysis for ", params$var, "\n")
 ```
 
-```{r, conditional_block21, eval = params$mixt_print, echo = FALSE, warning = FALSE, out.width = "95%"}
+```{r, conditional_block31, eval = params$mixt_print, echo = FALSE, warning = FALSE, out.width = "95%"}
 params$mixt_density
 ```
 
-```{r, conditional_block22, eval = params$mixt_print, echo = FALSE, warning = FALSE, out.width = "95%"}
+```{r, conditional_block32, eval = params$mixt_print, echo = FALSE, warning = FALSE, out.width = "95%"}
 params$mixt_cdf
 ```
 
-```{r, conditional_print22, eval = params$mixt_print, results = 'asis', echo = FALSE}
+```{r, conditional_print32, eval = params$mixt_print, results = 'asis', echo = FALSE}
 cat("\\pagebreak")
 ```
 
-```{r, conditional_block23, eval = params$mixt_print, echo = FALSE}
-kable(params$mixt_ri, caption = "Reference interval by mixtools analysis")
+```{r, conditional_block33, eval = params$mixt_print, echo = FALSE}
+kbl(params$mixt_ri, format = "latex", booktabs = TRUE, caption = "Reference interval by mixtools analysis") %>%
+  kable_styling(latex_options = "hold_position") %>%
+  footnote(general = paste0("results based on ", params$mixt_ri_width, " reference interval and ", params$mixt_mode, " distribution mode"), footnote_as_chunk = TRUE, threeparttable = TRUE)
 ```
 
-```{r, conditional_print23, eval = params$mixt_print, results = 'asis', echo = FALSE}
+```{r, conditional_print33, eval = params$mixt_print, results = 'asis', echo = FALSE}
+cat("\\pagebreak")
+```
+
+```{r, conditional_print41, eval = params$refiner_print, results = 'asis', echo = FALSE}
+cat("##", "RefineR analysis for ", params$var, "\n")
+```
+
+```{r, conditional_block41, eval = params$refiner_print, echo = FALSE, warning = FALSE, out.width = "95%"}
+
+if (params$refiner_ci_width == "None"){
+      plot(params$refiner_fit,
+           Scale = "original",
+           RIperc = params$refiner_ri_width1,
+           showCI = FALSE,
+           showValue = TRUE,
+           pointEst = params$refiner_point,
+           xlab = "Concentration",
+           ylab = "Frequency",
+           title = paste0("Estimated ", params$refiner_ri_width2, " reference interval"))
+    } else if (params$refiner_ci_width != "None"){
+      plot(params$refiner_fit,
+           Scale = "original",
+           RIperc = params$refiner_ri_width1,
+           showCI = TRUE,
+           CIperc = as.numeric(str_sub(params$refiner_ci_width, end = -2L)) / 100,
+           showValue = TRUE,
+           pointEst = params$refiner_point,
+           xlab = "Concentration",
+           ylab = "Frequency",
+           title = paste0("Estimated ", params$refiner_ri_width2, " reference interval"))
+    }
+```
+
+```{r, conditional_block42, eval = params$refiner_print, echo = FALSE}
+kbl(params$refiner_ri, format = "latex", booktabs = TRUE, caption = "Reference interval by RefineR analysis") %>%
+  kable_styling(latex_options = "hold_position", full_width = FALSE) %>%
+  footnote(general = paste0("results based on ", params$refiner_ri_width2, " reference interval, ", params$refiner_model, " model, ", params$refiner_point, " point estimates, and ", params$refiner_bootstraps, " bootstrap repititions"), footnote_as_chunk = TRUE, threeparttable = TRUE)
+```
+
+```{r, conditional_print42, eval = params$refiner_print, results = 'asis', echo = FALSE}
 cat("\\pagebreak")
 ```
 
 ## Information.
-Data are processed and presented on an interactive website using R language^1^, the shiny web application framework^2^ and the following packages: dplyr^3^, DT^4^, ggplot2^5^, mixtools^6^, readxl^7^, shinyFeedback^8^ and stringr^9^. Box-Cox analysis is performed with an adapted form of the gg_boxcox application of the lindia^10^ package and the boxcox function of the MASS^11^ package. In addition, the Bhattacharya analysis is based on code developed by The Lab-R-Torian^12^. Results are converted into pdf and html output with R Markdown^13^.
+LabRI has been developed as a research tool for the exploration of reference intervals in populations consisting of a mixture of distributions. For that, it provides an interactive user interface to several indirect methods for reference interval determination.
+Data are processed and presented on an interactive website using R language^1^, the shiny web application framework^2^ and the following packages: dplyr^3^, DT^4^, ggplot2^5^, kableExtra^6^, knitr^7^, mixtools^8^, readxl^9^, refineR^10^, shinyFeedback^11^, stringr^12^ and waiter^13^. Box-Cox analysis is performed with an adapted form of the gg_boxcox application of the lindia^14^ package and the boxcox function of the MASS^15^ package. In addition, the Bhattacharya analysis is based on code developed by The Lab-R-Torian^16^. Results are converted into pdf and html output with R Markdown^17^.
 
 ## References and packages:
-1. R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. Version: `r getRversion()`. URL: https://www.R-project.org
-2. shiny: Web Application Framework for R. Version `r packageDescription("shiny")$Version`. URL: https://CRAN.R-project.org/package=shiny
-3. dplyr: A Grammar of Data Manipulation. Version: `r packageDescription("dplyr")$Version`. URL: https://cran.r-project.org/web/packages/dplyr
-4. DT: A Wrapper of the JavaScript Library 'DataTables'. Version: `r packageDescription("DT")$Version`. URL: https://cran.r-project.org/web/packages/DT
-5. ggplot2: Create Elegant Data Visualisations Using the Grammar of Graphics. Version: `r packageDescription("ggplot2")$Version`. URL: https://cran.r-project.org/web/packages/ggplot2
-6. mixtools: Tools for Analyzing Finite Mixture Models. Version: `r packageDescription("mixtools")$Version`. URL: https://cran.r-project.org/package=mixtools
-7. readxl: Read Excel Files. Version: `r packageDescription("readxl")$Version`. URL: https://cran.r-project.org/package=readxl
-8. shinyFeedback: Display User Feedback in Shiny Apps. Version: `r packageDescription("shinyFeedback")$Version`. URL: https://cran.rstudio.com/web/packages/shinyFeedback
-9. stringr: Simple, Consistent Wrappers for Common String Operations. Version: `r packageDescription("stringr")$Version`. URL: https://cran.r-project.org/package=stringr
-10. lindia: Automated Linear Regression Diagnostic. Version: `r packageDescription("lindia")$Version`. URL: https://cran.r-project.org/package=lindia
-11. MASS: Support Functions and Datasets for Venables and Ripley's MASS. Version: `r packageDescription("MASS")$Version`. URL: https://cran.r-project.org/package=MASS
-12. The Lab-R-Torian: Applications of the R programming Language to Laboratory Medicine. URL: https://labrtorian.com/2017/09/05/mining-your-routine-data-for-reference-intervals-hoffman-bhattacharya-and-maximum-likelihood/
-13. rmarkdown: Dynamic Documents for R. Version: `r packageDescription("rmarkdown")$Version`. URL: http://rmarkdown.rstudio.com
+1. [R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria.](https://www.R-project.org) Version: `r getRversion()`.
+2. [shiny: Web Application Framework for R.](https://CRAN.R-project.org/package=shiny) Version `r packageDescription("shiny")$Version`.
+3. [dplyr: A Grammar of Data Manipulation.](https://cran.r-project.org/web/packages/dplyr) Version: `r packageDescription("dplyr")$Version`.
+4. [DT: A Wrapper of the JavaScript Library 'DataTables'.](https://cran.r-project.org/web/packages/DT) Version: `r packageDescription("DT")$Version`.
+5. [ggplot2: Create Elegant Data Visualisations Using the Grammar of Graphics.](https://cran.r-project.org/web/packages/ggplot2) Version: `r packageDescription("ggplot2")$Version`.
+6. [kableExtra: Construct Complex Table with 'kable' and Pipe Syntax.](https://cran.r-project.org/web/packages/kableExtra/index.html) Version: `r packageDescription("kableExtra")$Version`.
+7. [knitr: A General-Purpose Package for Dynamic Report Generation in R.](https://cran.r-project.org/web/packages/knitr/index.html) Version: `r packageDescription("knitr")$Version`.
+8. [mixtools: Tools for Analyzing Finite Mixture Models.](https://cran.r-project.org/package=mixtools) Version: `r packageDescription("mixtools")$Version`. 
+9. [readxl: Read Excel Files.](https://cran.r-project.org/package=readxl) Version: `r packageDescription("readxl")$Version`.
+10. [refineR: Reference Interval Estimation using Real-World Data.](https://cran.r-project.org/web/packages/refineR/index.html) Version: `r packageDescription("refineR")$Version`.
+11. [shinyFeedback: Display User Feedback in Shiny Apps.](https://cran.rstudio.com/web/packages/shinyFeedback) Version: `r packageDescription("shinyFeedback")$Version`.
+12. [stringr: Simple, Consistent Wrappers for Common String Operations.](https://cran.r-project.org/package=stringr) Version: `r packageDescription("stringr")$Version`.
+13. [waiter: Loading Screen for 'Shiny'.](https://cran.r-project.org/web/packages/waiter/index.html) Version: `r packageDescription("waiter")$Version`.
+14. [lindia: Automated Linear Regression Diagnostic.](https://cran.r-project.org/package=lindia) Version: `r packageDescription("lindia")$Version`.
+15. [MASS: Support Functions and Datasets for Venables and Ripley's MASS.](https://cran.r-project.org/package=MASS) Version: `r packageDescription("MASS")$Version`.
+16. [The Lab-R-Torian: Applications of the R programming Language to Laboratory Medicine.](https://labrtorian.com/2017/09/05/mining-your-routine-data-for-reference-intervals-hoffman-bhattacharya-and-maximum-likelihood/)
+17. [rmarkdown: Dynamic Documents for R.](http://rmarkdown.rstudio.com) Version: `r packageDescription("rmarkdown")$Version`.
 
 ## Disclaimer.
-This application was developed as a research tool for the exploration of reference intervals in populations consisting of a mixture of distributions. The use of this application shall constitute acceptance of the terms of the following disclaimers:
+The use of this application shall constitute acceptance of the terms of the following disclaimers:
 - This application is intended for research purposes only.
+- All data uploaded to this application are processed in the cloud. Click [here](https://docs.posit.co/shinyapps.io/security-and-compliance.html) for further information. It is the user's responsibility to conform with local data protection regulations.
 - All results computed by and published within this application are designed to  assist, but not to replace professional judgment. Therefore, the user shall review the results of this application carefully and may not rely solely on the information.
 - The information herein is provided 'AS IS' and 'AS AVAILABLE' and no representation, warranty or guarantee, explicit or implied, is made regarding the application's result accuracy, timeliness, sequence, completeness or suitability to a specific purpose or that the result will be error free or that any defects or omissions can or will be corrected.
 - The creator of this application will not be liable for any direct, indirect, incidental, consequential, special, exemplary, punitive or any damages whatsoever resulting in whole or part from any user's use of or reliance upon the application whether or not advised of the possibility of damage under any theory of liability, arising out of or in connection with the use or performance of the application.
 
-LabRI, beta version 1.0, 2022.
+LabRI, beta version 1.1, 2022.
