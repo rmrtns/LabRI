@@ -63,12 +63,20 @@ shinyServer(function(input, output) {
   
   var_selected_original <- reactive({
     req(input$variable)
-    df()
+    df() %>% select(input$variable)
   })
   
-  # Box-Cox analysis.
+  # Pre-
   
-  ## Server side function for input of lower and upper value of selected variable.
+  ## Header for data pre-processing.
+  
+  output$pre_processing_header <- renderText({
+    str_c("Pre-processing for ", input$variable)
+  })
+  
+  ## Functions for data pre-processing.
+  
+  ### Server side function for input of lower and upper value of selected variable.
   
   output$lower_value_input <- renderUI({
     numericInput("lower_value",
@@ -82,15 +90,15 @@ shinyServer(function(input, output) {
                  value = max(var_selected_original(), na.rm = TRUE))
   })
   
-  ## Create derivatives of selected variable based on selected range.
-  ### Some functions require input as dataframe, others as flattened list.
+  ### Create derivatives of selected variable based on selected range.
+  #### Some functions require input as dataframe, others as flattened list.
   
   var_selected <- reactive({
     req(input$variable, input$lower_value, input$upper_value)
     correct_range_values <- input$lower_value < input$upper_value
     feedbackDanger("upper_value", !correct_range_values, "Upper value not > lower value")
     req(correct_range_values)
-    df() %>% filter(.data[[input$variable]] >= input$lower_value & .data[[input$variable]] <= input$upper_value) %>% pull(., input$variable)
+    df() %>% filter((near(.data[[input$variable]], input$lower_value) | .data[[input$variable]] > input$lower_value) & (near(.data[[input$variable]], input$upper_value) | .data[[input$variable]] < input$upper_value)) %>% pull(., input$variable)
   })
   
   var_selected_df <- reactive({
@@ -98,7 +106,7 @@ shinyServer(function(input, output) {
     correct_range_values <- input$lower_value < input$upper_value
     feedbackDanger("upper_value", !correct_range_values, "Upper value not > lower value")
     req(correct_range_values)
-    var_selected_df <- df() %>% select(input$variable) %>% filter(.data[[input$variable]] >= input$lower_value & .data[[input$variable]] <= input$upper_value) 
+    var_selected_df <- df() %>% select(input$variable) %>% filter((near(.data[[input$variable]], input$lower_value) | .data[[input$variable]] > input$lower_value) & (near(.data[[input$variable]], input$upper_value) | .data[[input$variable]] < input$upper_value))
   })
   
   n_var_selected <- reactive({
@@ -109,17 +117,7 @@ shinyServer(function(input, output) {
   output$n_var <- renderText({
     n_var_selected()
   })
-  
-  # Data pre-processing
-  
-  ## Header for data pre-processing.
-  
-  output$pre_processing_header <- renderText({
-    str_c("Pre-processing for ", input$variable)
-  })
-  
-  ## Functions for data pre-processing.
-  
+
   ### Server side function for selection of number of bins.
   #### Input for bins1 is used in Box-Cox section, whereas bins2 is used in Bhattacharya section.
   #### Inputs for bins1 and bins2 are linked and updated upon change of either of inputs.
@@ -1231,7 +1229,7 @@ shinyServer(function(input, output) {
     updateNumericInput(inputId = "refiner_nbootstrap", value = 20)
     })
   
-  observeEvent(c(input$refiner_ri_width, input$refiner_ci_width, input$refiner_decimal, input$refiner_model, input$refiner_point, input$refiner_nbootstrap), {
+  observeEvent(c(input$refiner_ri_width, input$refiner_ri_width, input$refiner_decimal, input$refiner_model, input$refiner_point, input$refiner_nbootstrap), {
     calc_refiner(FALSE)
   })
   
