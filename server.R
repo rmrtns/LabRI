@@ -66,7 +66,7 @@ shinyServer(function(input, output) {
     df() %>% select(input$variable)
   })
   
-  # Pre-
+  # Pre-processing.
   
   ## Header for data pre-processing.
   
