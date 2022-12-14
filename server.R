@@ -1229,7 +1229,7 @@ shinyServer(function(input, output) {
     updateNumericInput(inputId = "refiner_nbootstrap", value = 20)
     })
   
-  observeEvent(c(input$refiner_ri_width, input$refiner_ri_width, input$refiner_decimal, input$refiner_model, input$refiner_point, input$refiner_nbootstrap), {
+  observeEvent(c(input$refiner_ri_width, input$refiner_ci_width, input$refiner_decimal, input$refiner_model, input$refiner_point, input$refiner_nbootstrap), {
     calc_refiner(FALSE)
   })
   
