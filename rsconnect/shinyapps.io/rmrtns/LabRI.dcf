@@ -5,10 +5,7 @@ account: rmrtns
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6667018
-bundleId: 6117063
+bundleId: 6635711
 url: https://rmrtns.shinyapps.io/LabRI/
-when: 1658349449.81279
-lastSyncTime: 1658349449.81282
-asMultiple: FALSE
-asStatic: FALSE
-ignoredFiles: DEPENDENCIES.md|LICENSE.md|README.md
+when: 1671016686.92712
+lastSyncTime: 1671016686.92714
