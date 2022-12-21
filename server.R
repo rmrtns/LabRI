@@ -160,7 +160,7 @@ shinyServer(function(input, output) {
     req(var_selected_df(), var_selected(), input$bins1 >= 1)
     ggplot(data = var_selected_df(), mapping = aes(x = var_selected_df()[[input$variable]])) +
       geom_histogram(bins = input$bins1,
-                     center = median(var_selected_df()[[input$variable]]),
+                     center = mean(var_selected_df()[[input$variable]]),
                      color = "black", fill = "grey") +
       labs(title = str_c("Histogram of ", input$variable, " without data transformation"),
            x = input$variable,
@@ -313,7 +313,7 @@ shinyServer(function(input, output) {
     req(var_selected_transformed(), input$bins1 >= 1)
     ggplot(data = var_selected_transformed_df(), mapping = aes(x = var_selected_transformed_df()[[input$variable]])) +
       geom_histogram(bins = input$bins1,
-                     center = median(var_selected_transformed_df()[[input$variable]]),
+                     center = mean(var_selected_transformed_df()[[input$variable]]),
                      color = "black", fill = "grey") +
       labs(title = str_c("Histogram of ", tolower(transform_hist_label_selected()), input$variable),
            x = str_c(tolower(transform_hist_label_selected()), input$variable),
@@ -329,7 +329,7 @@ shinyServer(function(input, output) {
     req(var_selected_transformed(), input$bins2 >= 1)
     ggplot(data = var_selected_transformed_df(), mapping = aes(x = var_selected_transformed_df()[[input$variable]])) +
       geom_histogram(bins = input$bins1,
-                     center = median(var_selected_transformed_df()[[input$variable]]),
+                     center = mean(var_selected_transformed_df()[[input$variable]]),
                      color = "black", fill = "grey") +
       labs(title = str_c("Histogram of ", tolower(transform_hist_label_selected()), input$variable),
            x = str_c(tolower(transform_hist_label_selected()), input$variable),
