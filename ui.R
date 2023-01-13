@@ -297,6 +297,11 @@ shinyUI(navbarPage("LabRI", id = "tabs",
                tags$li("Improved user interactivity"),
                tags$li("Bug fixes")
              ),
+             h4("Version 1.2 (January, 2023)"),
+             tags$ul(
+               tags$li("Improved user interactivity"),
+               tags$li("Bug fixes")
+             ),
              br(),
              h3("Disclaimer"),
              h4("The use of this application shall constitute acceptance of the terms of the following disclaimers:"),
