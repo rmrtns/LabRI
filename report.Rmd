@@ -221,17 +221,17 @@ Data are processed and presented on an interactive website using R language^1^, 
 ## References and packages:
 1. [R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria.](https://www.R-project.org) Version: `r getRversion()`.
 2. [shiny: Web Application Framework for R.](https://CRAN.R-project.org/package=shiny) Version `r packageDescription("shiny")$Version`.
-3. [dplyr: A Grammar of Data Manipulation.](https://cran.r-project.org/web/packages/dplyr) Version: `r packageDescription("dplyr")$Version`.
-4. [DT: A Wrapper of the JavaScript Library 'DataTables'.](https://cran.r-project.org/web/packages/DT) Version: `r packageDescription("DT")$Version`.
-5. [ggplot2: Create Elegant Data Visualisations Using the Grammar of Graphics.](https://cran.r-project.org/web/packages/ggplot2) Version: `r packageDescription("ggplot2")$Version`.
-6. [kableExtra: Construct Complex Table with 'kable' and Pipe Syntax.](https://cran.r-project.org/web/packages/kableExtra/index.html) Version: `r packageDescription("kableExtra")$Version`.
-7. [knitr: A General-Purpose Package for Dynamic Report Generation in R.](https://cran.r-project.org/web/packages/knitr/index.html) Version: `r packageDescription("knitr")$Version`.
+3. [dplyr: A Grammar of Data Manipulation.](https://cran.r-project.org/package=dplyr) Version: `r packageDescription("dplyr")$Version`.
+4. [DT: A Wrapper of the JavaScript Library 'DataTables'.](https://cran.r-project.org/package=DT) Version: `r packageDescription("DT")$Version`.
+5. [ggplot2: Create Elegant Data Visualisations Using the Grammar of Graphics.](https://cran.r-project.org/package=ggplot2) Version: `r packageDescription("ggplot2")$Version`.
+6. [kableExtra: Construct Complex Table with 'kable' and Pipe Syntax.](https://cran.r-project.org/package=kableExtra) Version: `r packageDescription("kableExtra")$Version`.
+7. [knitr: A General-Purpose Package for Dynamic Report Generation in R.](https://cran.r-project.org/package=knitr) Version: `r packageDescription("knitr")$Version`.
 8. [mixtools: Tools for Analyzing Finite Mixture Models.](https://cran.r-project.org/package=mixtools) Version: `r packageDescription("mixtools")$Version`. 
 9. [readxl: Read Excel Files.](https://cran.r-project.org/package=readxl) Version: `r packageDescription("readxl")$Version`.
-10. [refineR: Reference Interval Estimation using Real-World Data.](https://cran.r-project.org/web/packages/refineR/index.html) Version: `r packageDescription("refineR")$Version`.
-11. [shinyFeedback: Display User Feedback in Shiny Apps.](https://cran.rstudio.com/web/packages/shinyFeedback) Version: `r packageDescription("shinyFeedback")$Version`.
+10. [refineR: Reference Interval Estimation using Real-World Data.](https://cran.r-project.org/package=refineR) Version: `r packageDescription("refineR")$Version`.
+11. [shinyFeedback: Display User Feedback in Shiny Apps.](https://cran.r-project.org/package=shinyFeedback) Version: `r packageDescription("shinyFeedback")$Version`.
 12. [stringr: Simple, Consistent Wrappers for Common String Operations.](https://cran.r-project.org/package=stringr) Version: `r packageDescription("stringr")$Version`.
-13. [waiter: Loading Screen for 'Shiny'.](https://cran.r-project.org/web/packages/waiter/index.html) Version: `r packageDescription("waiter")$Version`.
+13. [waiter: Loading Screen for 'Shiny'.](https://cran.r-project.org/package=waiter) Version: `r packageDescription("waiter")$Version`.
 14. [lindia: Automated Linear Regression Diagnostic.](https://cran.r-project.org/package=lindia) Version: `r packageDescription("lindia")$Version`.
 15. [MASS: Support Functions and Datasets for Venables and Ripley's MASS.](https://cran.r-project.org/package=MASS) Version: `r packageDescription("MASS")$Version`.
 16. [The Lab-R-Torian: Applications of the R programming Language to Laboratory Medicine.](https://labrtorian.com/2017/09/05/mining-your-routine-data-for-reference-intervals-hoffman-bhattacharya-and-maximum-likelihood/)
@@ -245,4 +245,4 @@ The use of this application shall constitute acceptance of the terms of the foll
 - The information herein is provided 'AS IS' and 'AS AVAILABLE' and no representation, warranty or guarantee, explicit or implied, is made regarding the application's result accuracy, timeliness, sequence, completeness or suitability to a specific purpose or that the result will be error free or that any defects or omissions can or will be corrected.
 - The creator of this application will not be liable for any direct, indirect, incidental, consequential, special, exemplary, punitive or any damages whatsoever resulting in whole or part from any user's use of or reliance upon the application whether or not advised of the possibility of damage under any theory of liability, arising out of or in connection with the use or performance of the application.
 
-LabRI, beta version 1.1, 2022.
+LabRI, beta version 1.2, 2023.

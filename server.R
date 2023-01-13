@@ -426,7 +426,6 @@ shinyServer(function(input, output) {
   observeEvent(c(input$upload, input$variable, input$bins1, input$lower_value, input$upper_value, input$transformation, input$bhat_reset), {
     calc_bhat(FALSE)
     updateSelectInput(inputId = "bhat_ri_width", selected = "95%")
-    updateNumericInput(inputId = "bhat_decimal", value = 2)
     updateSelectInput(inputId = "bhat_nr_distr", selected = 1)
     updateNumericInput(inputId = "section_1_lower", value = 1)
     updateNumericInput(inputId = "section_1_upper", value = 1)
@@ -435,6 +434,10 @@ shinyServer(function(input, output) {
     updateNumericInput(inputId = "section_3_lower", value = 1)
     updateNumericInput(inputId = "section_3_upper", value = 1)
     })
+  
+  observeEvent(c(input$upload, input$variable, input$lower_value, input$upper_value, input$transformation, input$bhat_reset), {
+    updateNumericInput(inputId = "bhat_decimal", value = 2)
+  })
   
   observeEvent(c(input$bhat_ri_width, input$bhat_decimal, input$bhat_nr_distr, input$bins2, input$section_1_lower, input$section_1_upper, input$section_2_lower, input$section_2_upper, input$section_3_lower, input$section_3_upper), {
     calc_bhat(FALSE)
@@ -674,14 +677,17 @@ shinyServer(function(input, output) {
     
     if (nr_distr == 1) {
       modeled_distr +
+        geom_density(data = subset(comb_org_model, source == "original"), aes(x = value, y = after_stat(density), color = source), linewidth = 1) +
         geom_density(data = subset(comb_org_model, source == "distribution 1"), aes(x = value, y = after_stat(density), color = source), linewidth = 1)
     } else if (nr_distr == 2) {
       modeled_distr + 
+        geom_density(data = subset(comb_org_model, source == "original"), aes(x = value, y = after_stat(density), color = source), linewidth = 1) +
         geom_density(data = subset(comb_org_model, source == "distribution 1"), aes(x = value, y = after_stat(density) * list_lambda[["lambda1"]], color = source), linewidth = 1) +
         geom_density(data = subset(comb_org_model, source == "distribution 2"), aes(x = value, y = after_stat(density) * list_lambda[["lambda2"]], color = source), linewidth = 1) +
         geom_density(data = subset(comb_org_model, source == "sum"), aes(x = value, y = after_stat(density), color = source), linewidth = 1, bw = "ucv")
     } else if (nr_distr == 3) {
       modeled_distr + 
+        geom_density(data = subset(comb_org_model, source == "original"), aes(x = value, y = after_stat(density), color = source), linewidth = 1) +
         geom_density(data = subset(comb_org_model, source == "distribution 1"), aes(x = value, y = after_stat(density) * list_lambda[["lambda1"]], color = source), linewidth = 1) +
         geom_density(data = subset(comb_org_model, source == "distribution 2"), aes(x = value, y = after_stat(density) * list_lambda[["lambda2"]], color = source), linewidth = 1) +
         geom_density(data = subset(comb_org_model, source == "distribution 3"), aes(x = value, y = after_stat(density) * list_lambda[["lambda3"]], color = source), linewidth = 1) +
@@ -1212,7 +1218,7 @@ shinyServer(function(input, output) {
   refiner_bootstrap_check <- observeEvent(input$refiner_nbootstrap, {
     feedback("refiner_nbootstrap", TRUE, HTML("N = 20 repititions for demonstration purposes <br/>N >= 200 repititions for real-world analysis"))
   })
-  
+
   ### Initiate and reset results.
   #### Tabulated and graphical results should be reset and hided if input changes.
   #### Variable reset_results is required to be FALSE in the reactive functions related to results output above.
@@ -1240,7 +1246,11 @@ shinyServer(function(input, output) {
   refiner_fit <- reactive({
     req(calc_refiner() == TRUE)
     
-    id <- showNotification(HTML("Calculating reference interval <br/>This may take several minutes"), type = "message", duration = NULL, closeButton = FALSE)
+    if (input$refiner_ci_width == "None"){
+      id <- showNotification(HTML("Calculating reference interval <br/>This may take several minutes"), type = "message", duration = NULL, closeButton = FALSE)
+    } else if (input$refiner_ci_width != "None"){
+      id <- showNotification(HTML("Calculating reference interval <br/>This may take several hours"), type = "message", duration = NULL, closeButton = FALSE)
+    }
     on.exit(removeNotification(id), add = TRUE)
     
     waiter <- Waiter$new(html = spin_loader(), color = transparent(0))
