@@ -995,7 +995,7 @@ shinyServer(function(input, output) {
   
   plot_distr_mixt_data_normal <- reactive({
     req(calc_mixt() == TRUE, input$mixt_nr_distr > 0)
-    
+
     original <- tibble(value = var_selected()) %>% mutate(source = "original")
     
     if (input$mixt_nr_distr == 1 | input$mixt_nr_distr == 2 | input$mixt_nr_distr == 3){
@@ -1075,9 +1075,9 @@ shinyServer(function(input, output) {
     }
     
     # Output.
-    list(alpha1 = results_distr1[["alpha"]], beta1 = results_distr1[["beta"]], lambda = results_distr1[["lambda"]], lrl_mixt1 = results_distr1[["lrl_mixt"]], url_mixt1 = results_distr1[["url_mixt"]], 
-         alpha2 = results_distr2[["alpha"]], beta2 = results_distr2[["beta"]], lambda = results_distr2[["lambda"]], lrl_mixt2 = results_distr2[["lrl_mixt"]], url_mixt2 = results_distr2[["url_mixt"]],
-         alpha3 = results_distr3[["alpha"]], beta3 = results_distr3[["beta"]], lambda = results_distr3[["lambda"]], lrl_mixt3 = results_distr3[["lrl_mixt"]], url_mixt3 = results_distr3[["url_mixt"]])
+    list(alpha1 = results_distr1[["alpha"]], beta1 = results_distr1[["beta"]], lambda1 = results_distr1[["lambda"]], lrl_mixt1 = results_distr1[["lrl_mixt"]], url_mixt1 = results_distr1[["url_mixt"]], 
+         alpha2 = results_distr2[["alpha"]], beta2 = results_distr2[["beta"]], lambda2 = results_distr2[["lambda"]], lrl_mixt2 = results_distr2[["lrl_mixt"]], url_mixt2 = results_distr2[["url_mixt"]],
+         alpha3 = results_distr3[["alpha"]], beta3 = results_distr3[["beta"]], lambda3 = results_distr3[["lambda"]], lrl_mixt3 = results_distr3[["lrl_mixt"]], url_mixt3 = results_distr3[["url_mixt"]])
   })
   
   ### Table with reference interval based on mixtools analysis (gamma distribution).
@@ -1103,20 +1103,21 @@ shinyServer(function(input, output) {
   
   plot_distr_mixt_data_gamma <- reactive({
     req(calc_mixt() == TRUE, input$mixt_nr_distr > 0)
+    
     original <- tibble(value = var_selected()) %>% mutate(source = "original")
     
     if (input$mixt_nr_distr == 1 | input$mixt_nr_distr == 2 | input$mixt_nr_distr == 3){
-      distr1 <- tibble(value = rgamma(mixtools_normal()[["lambda1"]] * 10000, shape = mixtools_gamma()[["alpha1"]], scale = mixtools_gamma()[["beta1"]]))
+      distr1 <- tibble(value = rgamma(mixtools_gamma()[["lambda1"]] * 10000, shape = mixtools_gamma()[["alpha1"]], scale = mixtools_gamma()[["beta1"]]))
       distr1 <- distr1 %>% mutate(source = "distribution 1")
     }
     
     if (input$mixt_nr_distr == 2 | input$mixt_nr_distr == 3){
-      distr2 <- tibble(value = rgamma(mixtools_normal()[["lambda2"]] * 10000, shape = mixtools_gamma()[["alpha2"]], scale = mixtools_gamma()[["beta2"]]))
+      distr2 <- tibble(value = rgamma(mixtools_gamma()[["lambda2"]] * 10000, shape = mixtools_gamma()[["alpha2"]], scale = mixtools_gamma()[["beta2"]]))
       distr2 <- distr2 %>% mutate(source = "distribution 2")
     }
     
     if (input$mixt_nr_distr == 3){
-      distr3 <- tibble(value = rgamma(mixtools_normal()[["lambda3"]] * 10000, shape = mixtools_gamma()[["alpha3"]], scale = mixtools_gamma()[["beta3"]]))
+      distr3 <- tibble(value = rgamma(mixtools_gamma()[["lambda3"]] * 10000, shape = mixtools_gamma()[["alpha3"]], scale = mixtools_gamma()[["beta3"]]))
       distr3 <- distr3 %>% mutate(source = "distribution 3")
     }
     
